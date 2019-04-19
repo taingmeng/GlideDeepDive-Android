@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.raywenderlich.android.rwandroidtutorial"
+<manifest package="com.raywenderlich.android.wendergram"
           xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <uses-permission android:name="android.permission.INTERNET"/>
 
   <application
       android:allowBackup="false"
@@ -14,6 +16,7 @@
     <activity android:name=".SplashActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
+        <action android:name="android.intent.action.VIEW"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
@@ -21,6 +24,11 @@
 
     <!-- Main Activity -->
     <activity android:name=".MainActivity"/>
+
+    <!-- Edit Photo Activity -->
+    <activity
+        android:name=".EditPhotoActivity"
+        android:label="@string/title_activity_edit_photo"/>
   </application>
 
 </manifest>

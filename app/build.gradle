@@ -4,11 +4,13 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
 
   defaultConfig {
-    applicationId "com.raywenderlich.android.rwandroidtutorial"
+    applicationId "com.raywenderlich.android.wendergram"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
     versionCode 1
@@ -32,9 +34,20 @@ dependencies {
 
   // Support Libraries
   implementation 'androidx.appcompat:appcompat:1.0.2'
-  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
   // TUTORIAL DEPENDENCIES HERE
+  implementation 'com.github.bumptech.glide:glide:4.9.0'
+  kapt 'com.github.bumptech.glide:compiler:4.9.0'
+  implementation 'jp.wasabeef:glide-transformations:3.3.0'
+  implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+  implementation('com.github.bumptech.glide:okhttp3-integration:4.9.0') {
+    exclude group: 'glide-parent'
+  }
+  implementation('com.github.bumptech.glide:recyclerview-integration:4.9.0') {
+    transitive = false
+  }
 
   // Testing Dependencies
   testImplementation 'junit:junit:4.12'

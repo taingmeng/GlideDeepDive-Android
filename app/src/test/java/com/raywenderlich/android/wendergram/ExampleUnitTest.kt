@@ -1,4 +1,4 @@
-package com.raywenderlich.android.rwandroidtutorial
+package com.raywenderlich.android.wendergram
 
 import org.junit.Test
 

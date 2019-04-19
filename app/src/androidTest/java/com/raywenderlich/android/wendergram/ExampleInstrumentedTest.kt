@@ -1,4 +1,4 @@
-package com.raywenderlich.android.rwandroidtutorial
+package com.raywenderlich.android.wendergram
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

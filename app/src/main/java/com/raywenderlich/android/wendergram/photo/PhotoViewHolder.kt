@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Razeware LLC
+ * Copyright (c) 2019 Razeware LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,20 +28,30 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.rwandroidtutorial
+package com.raywenderlich.android.wendergram.photo
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
+import com.raywenderlich.android.wendergram.R
+import com.raywenderlich.android.wendergram.glide.GlideImageLoader
+import kotlinx.android.synthetic.main.view_holder_photo.view.*
 
-/**
- * Main Screen
- */
-class MainActivity : AppCompatActivity() {
+class PhotoViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+    RecyclerView.ViewHolder(inflater.inflate(
+        R.layout.view_holder_photo, parent, false)) {
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+  private var glideImageLoader = GlideImageLoader(itemView.ivPhoto, itemView.progressBar)
 
-    // Your code
+  fun bind(photoUrl: String?) {
+    val url = if (photoUrl != null) "$photoUrl?w=360" else null
+    glideImageLoader.load(
+        url,
+        RequestOptions()
+            .centerCrop()
+            .placeholder(R.drawable.ic_image_place_holder)
+            .error(R.drawable.ic_broken_image)
+            .fallback(R.drawable.ic_no_image))
   }
 }
