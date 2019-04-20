@@ -31,21 +31,16 @@
 package com.raywenderlich.android.wendergram
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.raywenderlich.android.wendergram.glide.GlideImageLoader
 import com.raywenderlich.android.wendergram.photo.PhotoAdapter
-import com.raywenderlich.android.wendergram.provider.PhotoPreloadModelProvider
 import com.raywenderlich.android.wendergram.provider.PhotoProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -72,8 +67,6 @@ class MainActivity : AppCompatActivity() {
 
     val profilePicUrl = "https://images.unsplash.com/photo-1482849297070-f4fae2173efe"
     loadProfilePic(profilePicUrl)
-
-    preloadRecyclerView()
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -84,16 +77,10 @@ class MainActivity : AppCompatActivity() {
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     return when {
       item?.itemId == R.id.clear_cache -> {
-        val handler = Handler(Looper.getMainLooper())
         Thread(Runnable {
           Glide.get(this).clearDiskCache()
-          handler.post { rvPhotos.adapter?.notifyDataSetChanged() }
         }).start()
         Glide.get(this).clearMemory()
-        true
-      }
-      item?.itemId == R.id.refresh -> {
-        rvPhotos.adapter?.notifyDataSetChanged()
         true
       }
       else -> super.onOptionsItemSelected(item)
@@ -110,14 +97,4 @@ class MainActivity : AppCompatActivity() {
                 .transform(CircleCrop())
         )
   }
-
-  private fun preloadRecyclerView() {
-    val preloadSizeProvider = ViewPreloadSizeProvider<String>()
-    val modelProvider = PhotoPreloadModelProvider(this, photoProvider.photos)
-    val preLoader = RecyclerViewPreloader<String>(
-        this, modelProvider, preloadSizeProvider, 30)
-
-    rvPhotos.addOnScrollListener(preLoader)
-  }
-
 }
