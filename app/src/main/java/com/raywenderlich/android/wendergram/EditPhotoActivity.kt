@@ -46,7 +46,6 @@ import jp.wasabeef.glide.transformations.gpu.ContrastFilterTransformation
 import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation
 import kotlinx.android.synthetic.main.activity_edit_photo.*
 
-
 class EditPhotoActivity : AppCompatActivity() {
   private var blurValue: Int = 1
   private var vignetteValue: Float = 1f
@@ -101,6 +100,10 @@ class EditPhotoActivity : AppCompatActivity() {
       rbContrast.isChecked -> contrastValue = (progress.toFloat() / 100) * 4
     }
 
+    rbBlur.text = String.format("Blur %s", blurValue)
+    rbVignette.text = String.format("Vignette %s", vignetteValue)
+    rbContrast.text = String.format("Contrast %s", contrastValue)
+
     GlideImageLoader(ivPhoto, progressBar).load(
         photoUrl,
         RequestOptions()
@@ -114,15 +117,6 @@ class EditPhotoActivity : AppCompatActivity() {
             .diskCacheStrategy(DiskCacheStrategy.DATA)
             .placeholder(ivPhoto.drawable)
     )
-
-//    Glide.with(this@EditPhotoActivity)
-//        .load(photoUrl)
-//
-//        .into(ivPhoto)
-
-    rbBlur.text = String.format("Blur %s", blurValue)
-    rbVignette.text = String.format("Vignette %s", vignetteValue)
-    rbContrast.text = String.format("Contrast %s", contrastValue)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

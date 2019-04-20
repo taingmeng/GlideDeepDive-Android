@@ -44,10 +44,6 @@ import com.raywenderlich.android.wendergram.photo.PhotoAdapter
 import com.raywenderlich.android.wendergram.provider.PhotoProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-/**
- * Main Screen
- */
 class MainActivity : AppCompatActivity() {
 
   private val photoProvider = PhotoProvider()
@@ -77,10 +73,7 @@ class MainActivity : AppCompatActivity() {
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     return when {
       item?.itemId == R.id.clear_cache -> {
-        Thread(Runnable {
-          Glide.get(this).clearDiskCache()
-        }).start()
-        Glide.get(this).clearMemory()
+        clearCache()
         true
       }
       else -> super.onOptionsItemSelected(item)
@@ -96,5 +89,12 @@ class MainActivity : AppCompatActivity() {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CircleCrop())
         )
+  }
+
+  private fun clearCache() {
+    Thread(Runnable {
+      Glide.get(this).clearDiskCache()
+    }).start()
+    Glide.get(this).clearMemory()
   }
 }

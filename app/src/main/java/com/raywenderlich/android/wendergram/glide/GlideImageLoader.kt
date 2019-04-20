@@ -41,7 +41,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 
-
 class GlideImageLoader(
     private val mImageView: ImageView?,
     private val mProgressBar: ProgressBar?) {

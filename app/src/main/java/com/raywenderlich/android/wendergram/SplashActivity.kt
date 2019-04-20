@@ -37,11 +37,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 
-/**
- * Splash Screen with the app icon and name at the center, this is also the launch screen and
- * opens up in fullscreen mode. Once launched it waits for 2 seconds after which it opens the
- * MainActivity
- */
 class SplashActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
