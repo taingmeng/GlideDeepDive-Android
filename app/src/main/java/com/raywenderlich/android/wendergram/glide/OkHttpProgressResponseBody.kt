@@ -30,42 +30,50 @@
 
 package com.raywenderlich.android.wendergram.glide
 
-import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.module.AppGlideModule
-import okhttp3.OkHttpClient
-import java.io.InputStream
+import okhttp3.HttpUrl
+import okhttp3.MediaType
+import okhttp3.ResponseBody
+import okio.*
+import java.io.IOException
 
-@GlideModule
-class ProgressAppGlideModule : AppGlideModule() {
+class OkHttpProgressResponseBody internal constructor(
+    private val url: HttpUrl,
+    private val responseBody: ResponseBody,
+    private val progressListener: ResponseProgressListener) : ResponseBody() {
 
-  override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-    super.registerComponents(context, glide, registry)
-    val client = OkHttpClient.Builder()
-        .addNetworkInterceptor { chain ->
-          val request = chain.request()
-          val response = chain.proceed(request)
-          val listener = DispatchingProgressListener()
-          response.newBuilder()
-              .body(OkHttpProgressResponseBody(request.url(), response.body()!!, listener))
-              .build()
-        }
-        .build()
-    glide.registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client))
+  private var bufferedSource: BufferedSource? = null
+
+  override fun contentType(): MediaType {
+    return responseBody.contentType()!!
   }
 
-  companion object {
+  override fun contentLength(): Long {
+    return responseBody.contentLength()
+  }
 
-    fun forget(url: String?) {
-      DispatchingProgressListener.forget(url)
+  override fun source(): BufferedSource {
+    if (bufferedSource == null) {
+      bufferedSource = Okio.buffer(source(responseBody.source()))
     }
+    return this.bufferedSource!!
+  }
 
-    fun expect(url: String?, listener: UIonProgressListener) {
-      DispatchingProgressListener.expect(url, listener)
+  private fun source(source: Source): Source {
+    return object : ForwardingSource(source) {
+      var totalBytesRead = 0L
+
+      @Throws(IOException::class)
+      override fun read(sink: Buffer, byteCount: Long): Long {
+        val bytesRead = super.read(sink, byteCount)
+        val fullLength = responseBody.contentLength()
+        if (bytesRead.toInt() == -1) { // this source is exhausted
+          totalBytesRead = fullLength
+        } else {
+          totalBytesRead += bytesRead
+        }
+        progressListener.update(url, totalBytesRead, fullLength)
+        return bytesRead
+      }
     }
   }
 }

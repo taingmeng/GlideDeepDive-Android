@@ -30,42 +30,51 @@
 
 package com.raywenderlich.android.wendergram.glide
 
-import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.module.AppGlideModule
-import okhttp3.OkHttpClient
-import java.io.InputStream
+import android.os.Handler
+import android.os.Looper
+import okhttp3.HttpUrl
 
-@GlideModule
-class ProgressAppGlideModule : AppGlideModule() {
+class DispatchingProgressListener internal constructor() : ResponseProgressListener {
 
-  override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-    super.registerComponents(context, glide, registry)
-    val client = OkHttpClient.Builder()
-        .addNetworkInterceptor { chain ->
-          val request = chain.request()
-          val response = chain.proceed(request)
-          val listener = DispatchingProgressListener()
-          response.newBuilder()
-              .body(OkHttpProgressResponseBody(request.url(), response.body()!!, listener))
-              .build()
-        }
-        .build()
-    glide.registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client))
+  private val handler: Handler = Handler(Looper.getMainLooper())
+
+  override fun update(url: HttpUrl, bytesRead: Long, contentLength: Long) {
+    val key = url.toString()
+    val listener = LISTENERS[key] ?: return
+    if (contentLength <= bytesRead) {
+      forget(key)
+    }
+    if (needsDispatch(key, bytesRead, contentLength, listener.granualityPercentage)) {
+      handler.post { listener.onProgress(bytesRead, contentLength) }
+    }
+  }
+
+  private fun needsDispatch(key: String, current: Long, total: Long, granularity: Float): Boolean {
+    if (granularity == 0f || current == 0L || total == current) {
+      return true
+    }
+    val percent = 100f * current / total
+    val currentProgress = (percent / granularity).toLong()
+    val lastProgress = PROGRESSES[key]
+    return if (lastProgress == null || currentProgress != lastProgress) {
+      PROGRESSES[key] = currentProgress
+      true
+    } else {
+      false
+    }
   }
 
   companion object {
+    private val LISTENERS = HashMap<String?, UIonProgressListener>()
+    private val PROGRESSES = HashMap<String?, Long>()
 
-    fun forget(url: String?) {
-      DispatchingProgressListener.forget(url)
+    internal fun forget(url: String?) {
+      LISTENERS.remove(url)
+      PROGRESSES.remove(url)
     }
 
-    fun expect(url: String?, listener: UIonProgressListener) {
-      DispatchingProgressListener.expect(url, listener)
+    internal fun expect(url: String?, listener: UIonProgressListener) {
+      LISTENERS[url] = listener
     }
   }
 }
