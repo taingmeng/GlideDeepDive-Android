@@ -58,7 +58,7 @@ class DispatchingProgressManager internal constructor() : ResponseProgressListen
     if (contentLength <= bytesRead) { //7
       forget(key)
     }
-    if (needsDispatch(key, bytesRead, contentLength, listener.granualityPercentage)) { //8
+    if (needsDispatch(key, bytesRead, contentLength, listener.granularityPercentage)) { //8
       handler.post { listener.onProgress(bytesRead, contentLength) }
     }
   }

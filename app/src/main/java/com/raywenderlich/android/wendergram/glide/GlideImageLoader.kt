@@ -41,33 +41,31 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 
-
-
 class GlideImageLoader(
     private val mImageView: ImageView?,
-    private val mProgressBar: ProgressBar?) {
+    private val mProgressBar: ProgressBar?) { //1
 
-  fun load(url: String?, options: RequestOptions?) {
+  fun load(url: String?, options: RequestOptions?) { //2
     if (options == null) return
 
-    onConnecting()
+    onConnecting() //3
 
-    DispatchingProgressManager.expect(url, object : UIonProgressListener {
+    DispatchingProgressManager.expect(url, object : UIonProgressListener { //4
 
-      override val granualityPercentage: Float
+      override val granularityPercentage: Float //5
         get() = 1.0f
 
       override fun onProgress(bytesRead: Long, expectedLength: Long) {
         if (mProgressBar != null) {
-          mProgressBar.progress = (100 * bytesRead / expectedLength).toInt()
+          mProgressBar.progress = (100 * bytesRead / expectedLength).toInt() //6
         }
       }
     })
 
-    Glide.with(mImageView!!.context)
+    Glide.with(mImageView!!.context) //7
         .load(url)
-        .apply(options)
-        .listener(object : RequestListener<Drawable> {
+        .apply(options) //8
+        .listener(object : RequestListener<Drawable> { //9
           override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?,
               isFirstResource: Boolean): Boolean {
             DispatchingProgressManager.forget(url)
