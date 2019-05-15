@@ -35,9 +35,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.raywenderlich.android.wendergram.photo.PhotoAdapter
 import com.raywenderlich.android.wendergram.provider.PhotoProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -79,20 +76,10 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun loadProfilePic(profilePicUrl: String) {
-    Glide.with(this) //1
-        .load(profilePicUrl)
-        .placeholder(R.drawable.ic_profile_placeholder)
-        .error(R.drawable.ic_profile_placeholder)
-        .skipMemoryCache(true) //2
-        .diskCacheStrategy(DiskCacheStrategy.NONE) //3
-        .transform(CircleCrop()) //4
-        .into(ivProfile)
+
   }
 
   private fun clearCache() {
-    Thread(Runnable {
-      Glide.get(this).clearDiskCache()
-    }).start()
-    Glide.get(this).clearMemory()
+
   }
 }

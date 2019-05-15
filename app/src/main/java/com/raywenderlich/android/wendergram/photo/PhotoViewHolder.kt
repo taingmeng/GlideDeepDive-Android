@@ -42,13 +42,6 @@ class PhotoViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         R.layout.view_holder_photo, parent, false)) {
 
   fun bind(photoUrl: String?) {
-    val url = if (photoUrl != null) "$photoUrl?w=360" else null //1
-    Glide.with(itemView)  //2
-        .load(url) //3
-        .centerCrop() //4
-        .placeholder(R.drawable.ic_image_place_holder) //5
-        .error(R.drawable.ic_broken_image) //6
-        .fallback(R.drawable.ic_no_image) //7
-        .into(itemView.ivPhoto) //8
+
   }
 }

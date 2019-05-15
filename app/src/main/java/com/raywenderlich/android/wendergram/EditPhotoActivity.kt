@@ -50,13 +50,10 @@ class EditPhotoActivity : AppCompatActivity() {
   private var blurValue: Int = 1
   private var vignetteValue: Float = 1f
   private var contrastValue: Float = 1f
-  private var glideImageLoader: GlideImageLoader? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_edit_photo)
-
-    glideImageLoader = GlideImageLoader(ivPhoto, progressBar)
 
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     initViews()
@@ -105,22 +102,6 @@ class EditPhotoActivity : AppCompatActivity() {
     rbBlur.text = String.format("Blur %s", blurValue)
     rbVignette.text = String.format("Vignette %s", vignetteValue)
     rbContrast.text = String.format("Contrast %s", contrastValue)
-
-    glideImageLoader?.load(
-        photoUrl,
-        RequestOptions()
-            .override(500, 500)
-            .transform(
-                CenterCrop(),
-                BlurTransformation(blurValue),
-                ContrastFilterTransformation(contrastValue),
-                VignetteFilterTransformation(
-                    PointF(0.5f, 0.5f),
-                    floatArrayOf(0f, 0f, 0f),
-                    0f,
-                    vignetteValue))
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .placeholder(ivPhoto.drawable))
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

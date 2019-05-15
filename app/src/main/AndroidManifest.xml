@@ -2,8 +2,6 @@
 <manifest package="com.raywenderlich.android.wendergram"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <uses-permission android:name="android.permission.INTERNET"/>
-
   <application
       android:allowBackup="false"
       android:icon="@mipmap/ic_launcher"
