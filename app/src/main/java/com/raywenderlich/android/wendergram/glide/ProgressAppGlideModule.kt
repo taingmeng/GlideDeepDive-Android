@@ -46,26 +46,15 @@ class ProgressAppGlideModule : AppGlideModule() {
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     super.registerComponents(context, glide, registry)
     val client = OkHttpClient.Builder()
-        .addNetworkInterceptor { chain ->
+        .addNetworkInterceptor { chain -> //1
           val request = chain.request()
           val response = chain.proceed(request)
-          val listener = DispatchingProgressListener()
+          val listener = DispatchingProgressManager()  //2
           response.newBuilder()
-              .body(OkHttpProgressResponseBody(request.url(), response.body()!!, listener))
+              .body(OkHttpProgressResponseBody(request.url(), response.body()!!, listener))  //3
               .build()
         }
         .build()
-    glide.registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client))
-  }
-
-  companion object {
-
-    fun forget(url: String?) {
-      DispatchingProgressListener.forget(url)
-    }
-
-    fun expect(url: String?, listener: UIonProgressListener) {
-      DispatchingProgressListener.expect(url, listener)
-    }
+    glide.registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client)) //4
   }
 }

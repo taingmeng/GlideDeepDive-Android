@@ -17,24 +17,6 @@
       tools:srcCompat="@drawable/ic_profile_placeholder"
       />
 
-
-  <ProgressBar
-      android:id="@+id/progressBar"
-      style="?android:attr/progressBarStyleHorizontal"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:background="@drawable/circle_shape"
-      android:indeterminate="false"
-      android:max="100"
-      android:progress="0"
-      android:progressDrawable="@drawable/circular_progress_bar"
-      app:layout_constrainedHeight="true"
-      app:layout_constrainedWidth="true"
-      app:layout_constraintBottom_toBottomOf="@id/ivProfile"
-      app:layout_constraintLeft_toLeftOf="@id/ivProfile"
-      app:layout_constraintRight_toRightOf="@id/ivProfile"
-      app:layout_constraintTop_toTopOf="@id/ivProfile"/>
-
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rvPhotos"
       android:layout_width="match_parent"

@@ -33,25 +33,22 @@ package com.raywenderlich.android.wendergram.photo
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.Glide
 import com.raywenderlich.android.wendergram.R
-import com.raywenderlich.android.wendergram.glide.GlideImageLoader
 import kotlinx.android.synthetic.main.view_holder_photo.view.*
 
 class PhotoViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(
         R.layout.view_holder_photo, parent, false)) {
 
-  private var glideImageLoader = GlideImageLoader(itemView.ivPhoto, itemView.progressBar)
-
   fun bind(photoUrl: String?) {
-    val url = if (photoUrl != null) "$photoUrl?w=360" else null
-    glideImageLoader.load(
-        url,
-        RequestOptions()
-            .centerCrop()
-            .placeholder(R.drawable.ic_image_place_holder)
-            .error(R.drawable.ic_broken_image)
-            .fallback(R.drawable.ic_no_image))
+    val url = if (photoUrl != null) "$photoUrl?w=360" else null //1
+    Glide.with(itemView)  //2
+        .load(url) //3
+        .centerCrop() //4
+        .placeholder(R.drawable.ic_image_place_holder) //5
+        .error(R.drawable.ic_broken_image) //6
+        .fallback(R.drawable.ic_no_image) //7
+        .into(itemView.ivPhoto) //8
   }
 }

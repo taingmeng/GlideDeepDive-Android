@@ -38,8 +38,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
-import com.raywenderlich.android.wendergram.glide.GlideImageLoader
 import com.raywenderlich.android.wendergram.photo.PhotoAdapter
 import com.raywenderlich.android.wendergram.provider.PhotoProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     rvPhotos.layoutManager = GridLayoutManager(this, 3)
     rvPhotos.adapter = photoAdapter
 
-    val profilePicUrl = "https://images.unsplash.com/photo-1482849297070-f4fae2173efe"
+    val profilePicUrl = "https://source.unsplash.com/random"
     loadProfilePic(profilePicUrl)
   }
 
@@ -81,14 +79,14 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun loadProfilePic(profilePicUrl: String) {
-    GlideImageLoader(ivProfile, progressBar)
-        .load(profilePicUrl,
-            RequestOptions()
-                .placeholder(R.drawable.ic_profile_placeholder)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .transform(CircleCrop())
-        )
+    Glide.with(this) //1
+        .load(profilePicUrl)
+        .placeholder(R.drawable.ic_profile_placeholder)
+        .error(R.drawable.ic_profile_placeholder)
+        .skipMemoryCache(true) //2
+        .diskCacheStrategy(DiskCacheStrategy.NONE) //3
+        .transform(CircleCrop()) //4
+        .into(ivProfile)
   }
 
   private fun clearCache() {
